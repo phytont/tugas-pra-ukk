@@ -1,0 +1,58 @@
+@extends('layouts.admin')
+
+@section('title', 'Kelola Pengembalian')
+@section('header', 'Kelola Pengembalian')
+
+@section('content')
+<div class="bg-white rounded-lg shadow">
+    <div class="p-6 border-b flex justify-between items-center">
+        <h3 class="text-lg font-semibold">Daftar Pengembalian</h3>
+        <a href="{{ route('admin.pengembalians.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+            <i class="fas fa-plus mr-2"></i>Catat Pengembalian
+        </a>
+    </div>
+    
+    <div class="overflow-x-auto">
+        <table class="w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Peminjam</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alat</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tgl Kembali</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kondisi</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Denda</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @foreach($pengembalians as $index => $pengembalian)
+                <tr>
+                    <td class="px-6 py-4">{{ $pengembalians->firstItem() + $index }}</td>
+                    <td class="px-6 py-4">{{ $pengembalian->peminjaman->user->name }}</td>
+                    <td class="px-6 py-4">{{ $pengembalian->peminjaman->alat->nama_alat }}</td>
+                    <td class="px-6 py-4">{{ $pengembalian->tanggal_kembali->format('d/m/Y') }}</td>
+                    <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs rounded 
+                            {{ $pengembalian->kondisi == 'baik' ? 'bg-green-100 text-green-800' : 
+                               ($pengembalian->kondisi == 'rusak_ringan' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
+                            {{ ucfirst(str_replace('_', ' ', $pengembalian->kondisi)) }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">Rp {{ number_format($pengembalian->denda, 0, ',', '.') }}</td>
+                    <td class="px-6 py-4">
+                        <a href="{{ route('admin.pengembalians.show', $pengembalian) }}" class="text-blue-600 hover:text-blue-900">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="p-4">
+        {{ $pengembalians->links() }}
+    </div>
+</div>
+@endsection
