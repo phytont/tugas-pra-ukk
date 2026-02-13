@@ -9,7 +9,7 @@
         <h3 class="text-lg font-semibold">Form Edit Alat</h3>
     </div>
     
-    <form action="{{ route('admin.alats.update', $alat) }}" method="POST" class="p-6">
+    <form action="{{ route('admin.alats.update', $alat) }}" method="POST" enctype="multipart/form-data" class="p-6">
         @csrf
         @method('PUT')
         
@@ -75,6 +75,22 @@
             <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
             <textarea name="deskripsi" rows="3"
                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500">{{ old('deskripsi', $alat->deskripsi) }}</textarea>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Foto Alat</label>
+            @if($alat->foto)
+                <div class="mb-3">
+                    <img src="{{ asset('storage/' . $alat->foto) }}" alt="{{ $alat->nama_alat }}" class="h-32 rounded-lg">
+                    <p class="text-gray-600 text-sm mt-2">Foto saat ini</p>
+                </div>
+            @endif
+            <input type="file" name="foto" accept="image/*" 
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 @error('foto') border-red-500 @enderror">
+            <p class="text-gray-500 text-xs mt-1">Format: JPEG, PNG, JPG, GIF (Maks 5MB). Biarkan kosong jika tidak ingin mengganti foto.</p>
+            @error('foto')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="flex justify-end space-x-3">

@@ -40,17 +40,14 @@ class PeminjamanController extends Controller
             return back()->with('error', 'Jumlah alat tersedia tidak mencukupi!');
         }
 
-        $validated['status'] = 'dipinjam';
+        // Status peminjaman awal adalah pending approval, bukan langsung dipinjam
+        $validated['status'] = 'pending_approval';
+        $validated['status_persetujuan'] = 'menunggu';
 
         Peminjaman::create($validated);
 
-        $alat->decrement('jumlah_tersedia', $validated['jumlah_pinjam']);
-        if ($alat->jumlah_tersedia == 0) {
-            $alat->update(['status' => 'dipinjam']);
-        }
-
         return redirect()->route('admin.peminjamans.index')
-            ->with('success', 'Peminjaman berhasil ditambahkan!');
+            ->with('success', 'Peminjaman berhasil ditambahkan! Menunggu persetujuan Petugas untuk mengurangi stok.');
     }
 
     public function show(Peminjaman $peminjaman)

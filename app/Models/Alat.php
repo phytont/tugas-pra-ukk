@@ -14,7 +14,7 @@ class Alat extends Model
 
     protected $fillable = [
         'nama_alat', 'kategori_id', 'merk', 'model', 
-        'jumlah_total', 'jumlah_tersedia', 'deskripsi', 'status'
+        'jumlah_total', 'jumlah_tersedia', 'deskripsi', 'status', 'foto'
     ];
 
     public function kategori()

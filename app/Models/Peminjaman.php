@@ -23,14 +23,20 @@ class Peminjaman extends Model
         'status_persetujuan',
         'approved_by',
         'approved_at',
-        'keterangan'
+        'keterangan',
+        'status_verifikasi_petugas',
+        'tanggal_pengajuan_pengembalian',
+        'verified_by_petugas',
+        'verified_at_petugas'
     ];
 
     protected $casts = [
         'tanggal_pinjam' => 'date',
         'tanggal_kembali_rencana' => 'date',
         'tanggal_kembali_aktual' => 'date',
+        'tanggal_pengajuan_pengembalian' => 'date',
         'approved_at' => 'datetime',
+        'verified_at_petugas' => 'datetime',
     ];
 
     public function user()
@@ -46,6 +52,11 @@ class Peminjaman extends Model
     public function approvedBy()
     {
         return $this->belongsTo(User::class, 'approved_by');
+    }
+
+    public function verifiedByPetugas()
+    {
+        return $this->belongsTo(User::class, 'verified_by_petugas');
     }
 
     public function pengembalian()

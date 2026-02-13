@@ -71,10 +71,15 @@
         <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
             <p class="text-yellow-800 text-sm">
                 <i class="fas fa-exclamation-triangle mr-2"></i>
-                <strong>Perhatian:</strong> Denda akan dihitung oleh petugas berdasarkan:
+                <strong>Perhatian:</strong> Denda akan dihitung otomatis berdasarkan:
                 <ul class="list-disc list-inside mt-2 ml-4">
-                    <li>Keterlambatan pengembalian (Rp 10.000/hari)</li>
-                    <li>Kerusakan alat (Ringan: Rp 50.000, Berat: Rp 150.000)</li>
+                    <li><strong>Keterlambatan pengembalian:</strong> Rp 10.000/hari (dihitung otomatis)</li>
+                    <li><strong>Kerusakan alat:</strong> 
+                        <ul class="list-circle list-inside ml-4 mt-1">
+                            <li>Rusak Ringan: Rp 50.000</li>
+                            <li>Rusak Berat: Rp 150.000</li>
+                        </ul>
+                    </li>
                 </ul>
             </p>
         </div>

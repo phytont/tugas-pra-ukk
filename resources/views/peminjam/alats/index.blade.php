@@ -16,6 +16,14 @@
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
     @forelse($alats as $alat)
     <div class="bg-white rounded-lg shadow overflow-hidden hover:shadow-lg transition">
+        @if($alat->foto)
+            <img src="{{ asset('storage/' . $alat->foto) }}" alt="{{ $alat->nama_alat }}" class="w-full h-48 object-cover">
+        @else
+            <div class="w-full h-48 bg-gray-300 flex items-center justify-center">
+                <i class="fas fa-image text-gray-400 text-4xl"></i>
+            </div>
+        @endif
+
         <div class="p-6">
             <div class="flex justify-between items-start mb-4">
                 <span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">

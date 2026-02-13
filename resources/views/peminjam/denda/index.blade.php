@@ -53,12 +53,18 @@
                         </span>
                     </td>
                     <td class="px-4 py-3 border text-right font-bold text-red-600">
-                        Rp {{ number_format($p->denda, 0, ',', '.') }}
+                        Rp {{ number_format($p->denda_final, 0, ',', '.') }}
                     </td>
                     <td class="px-4 py-3 border text-center">
-                        <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">
-                            Belum Lunas
-                        </span>
+                        @if($p->status_pembayaran == 'sudah_bayar')
+                            <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-semibold">
+                                <i class="fas fa-check-circle mr-1"></i>Sudah Lunas
+                            </span>
+                        @else
+                            <span class="px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-semibold">
+                                <i class="fas fa-exclamation-circle mr-1"></i>Belum Dibayar
+                            </span>
+                        @endif
                     </td>
                 </tr>
                 @empty

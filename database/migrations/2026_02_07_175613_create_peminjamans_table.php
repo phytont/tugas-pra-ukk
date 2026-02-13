@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('peminjamans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->foreignId('alat_id')->constrained('alats')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('alat_id')->constrained('alats')->cascadeOnDelete();
             $table->integer('jumlah_pinjam');
             $table->date('tanggal_pinjam');
             $table->date('tanggal_kembali_rencana');

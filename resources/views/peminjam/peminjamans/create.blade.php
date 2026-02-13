@@ -44,7 +44,7 @@
         <div class="grid grid-cols-2 gap-4 mb-4">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Pinjam</label>
-                <input type="date" name="tanggal_pinjam" required min="{{ date('Y-m-d') }}"
+                <input type="date" name="tanggal_pinjam" id="tanggalPinjam" required min="{{ date('Y-m-d') }}"
                        class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 @error('tanggal_pinjam') border-red-500 @enderror">
                 @error('tanggal_pinjam')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -52,8 +52,9 @@
             </div>
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Tanggal Kembali</label>
-                <input type="date" name="tanggal_kembali_rencana" required
-                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 @error('tanggal_kembali_rencana') border-red-500 @enderror">
+                <input type="date" name="tanggal_kembali_rencana" id="tanggalKembali" required
+                       disabled
+                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 disabled:bg-gray-100 disabled:cursor-not-allowed @error('tanggal_kembali_rencana') border-red-500 @enderror">
                 @error('tanggal_kembali_rencana')
                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                 @enderror
@@ -84,10 +85,40 @@
 </div>
 
 <script>
+// Handle alat selection
 document.getElementById('alatSelect').addEventListener('change', function() {
     const tersedia = this.options[this.selectedIndex].dataset.tersedia;
     document.getElementById('maxJumlah').textContent = tersedia;
     document.getElementById('jumlahPinjam').max = tersedia;
+});
+
+// Handle tanggal pinjam change
+document.getElementById('tanggalPinjam').addEventListener('change', function() {
+    const tanggalPinjam = this.value;
+    const tanggalKembaliInput = document.getElementById('tanggalKembali');
+    
+    if (tanggalPinjam) {
+        // Enable tanggal kembali
+        tanggalKembaliInput.disabled = false;
+        
+        // Calculate next day
+        const pinjamDate = new Date(tanggalPinjam);
+        pinjamDate.setDate(pinjamDate.getDate() + 1);
+        
+        // Format to YYYY-MM-DD
+        const nextDay = pinjamDate.toISOString().split('T')[0];
+        
+        // Set value to next day
+        tanggalKembaliInput.value = nextDay;
+        
+        // Set min attribute to next day (disable dates before)
+        tanggalKembaliInput.min = nextDay;
+    } else {
+        // Disable and clear if no tanggal pinjam
+        tanggalKembaliInput.disabled = true;
+        tanggalKembaliInput.value = '';
+        tanggalKembaliInput.min = '';
+    }
 });
 </script>
 @endsection

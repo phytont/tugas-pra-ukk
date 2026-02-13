@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Alat;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class AlatController extends Controller
 {
@@ -31,9 +32,16 @@ class AlatController extends Controller
             'jumlah_total' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'status' => 'required|in:tersedia,dipinjam,rusak,maintenance',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $validated['jumlah_tersedia'] = $validated['jumlah_total'];
+
+        // Handle foto upload
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('alats', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         Alat::create($validated);
 
@@ -63,10 +71,21 @@ class AlatController extends Controller
             'jumlah_total' => 'required|integer|min:0',
             'deskripsi' => 'nullable|string',
             'status' => 'required|in:tersedia,dipinjam,rusak,maintenance',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120',
         ]);
 
         $dipinjam = $alat->jumlah_total - $alat->jumlah_tersedia;
         $validated['jumlah_tersedia'] = max(0, $validated['jumlah_total'] - $dipinjam);
+
+        // Handle foto upload
+        if ($request->hasFile('foto')) {
+            // Delete old foto jika ada
+            if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
+                Storage::disk('public')->delete($alat->foto);
+            }
+            $fotoPath = $request->file('foto')->store('alats', 'public');
+            $validated['foto'] = $fotoPath;
+        }
 
         $alat->update($validated);
 
@@ -76,6 +95,11 @@ class AlatController extends Controller
 
     public function destroy(Alat $alat)
     {
+        // Delete foto jika ada
+        if ($alat->foto && Storage::disk('public')->exists($alat->foto)) {
+            Storage::disk('public')->delete($alat->foto);
+        }
+
         $alat->delete();
         return redirect()->route('admin.alats.index')
             ->with('success', 'Alat berhasil dihapus!');

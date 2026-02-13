@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('peminjamans', function (Blueprint $table) {
             $table->enum('status_persetujuan', ['menunggu', 'disetujui', 'ditolak'])->default('menunggu')->after('status');
-            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('set null')->after('status_persetujuan');
+            $table->foreignId('approved_by')->nullable()->constrained('users')->nullOnDelete()->after('status_persetujuan');
             $table->timestamp('approved_at')->nullable()->after('approved_by');
         });
     }

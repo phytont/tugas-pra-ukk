@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Petugas;
 use App\Http\Controllers\Controller;
 use App\Models\Peminjaman;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class PeminjamanController extends Controller
 {
@@ -40,18 +41,20 @@ class PeminjamanController extends Controller
     // Setuju peminjaman
     public function setuju(Peminjaman $peminjaman)
     {
-        // Kurangi stok alat
+        // Kurangi stok alat HANYA saat persetujuan
         $alat = $peminjaman->alat;
         if ($alat->jumlah_tersedia < $peminjaman->jumlah_pinjam) {
             return back()->with('error', 'Stok alat tidak mencukupi!');
         }
 
         $peminjaman->update([
+            'status' => 'menunggu_pengembalian',
             'status_persetujuan' => 'disetujui',
-            'approved_by' => auth()->id(),
+            'approved_by' => Auth::id(),
             'approved_at' => now(),
         ]);
 
+        // STOK berkurang di sini, bukan saat pembuatan peminjaman
         $alat->decrement('jumlah_tersedia', $peminjaman->jumlah_pinjam);
         
         if ($alat->jumlah_tersedia == 0) {
@@ -59,7 +62,7 @@ class PeminjamanController extends Controller
         }
 
         return redirect()->route('petugas.peminjamans.index')
-            ->with('success', 'Peminjaman berhasil disetujui!');
+            ->with('success', 'Peminjaman berhasil disetujui! Stok alat berkurang.');
     }
 
     // Tolak peminjaman
@@ -71,7 +74,7 @@ class PeminjamanController extends Controller
 
         $peminjaman->update([
             'status_persetujuan' => 'ditolak',
-            'approved_by' => auth()->id(),
+            'approved_by' => Auth::id(),
             'approved_at' => now(),
             'keterangan' => $request->alasan_penolakan
         ]);

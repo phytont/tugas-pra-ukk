@@ -46,7 +46,10 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('kategoris', KategoriController::class);
     Route::resource('alats', AlatController::class);
     Route::resource('peminjamans', AdminPeminjaman::class);
-    Route::resource('pengembalians', AdminPengembalian::class);
+    
+    // Daftar Denda (Admin hanya melihat)
+    Route::get('/pengembalians', [AdminPengembalian::class, 'index'])->name('pengembalians.index');
+    Route::get('/pengembalians/{pengembalian}', [AdminPengembalian::class, 'show'])->name('pengembalians.show');
     
     Route::get('/logs', [LogController::class, 'index'])->name('logs.index');
 });
@@ -66,13 +69,17 @@ Route::middleware(['auth', 'role:petugas,admin'])->prefix('petugas')->name('petu
     Route::post('/peminjamans/{peminjaman}/setuju', [PetugasPeminjaman::class, 'setuju'])->name('peminjamans.setuju');
     Route::post('/peminjamans/{peminjaman}/tolak', [PetugasPeminjaman::class, 'tolak'])->name('peminjamans.tolak');
     
-    // Pengembalian & Denda
-    Route::get('/pengembalians', [PetugasPengembalian::class, 'index'])->name('pengembalians.index');
+// Input Pengembalian Manual oleh Petugas
     Route::get('/pengembalians/create', [PetugasPengembalian::class, 'create'])->name('pengembalians.create');
     Route::post('/pengembalians', [PetugasPengembalian::class, 'store'])->name('pengembalians.store');
+
+    // Pengembalian & Denda
+    Route::get('/pengembalians', [PetugasPengembalian::class, 'index'])->name('pengembalians.index');
+    Route::get('/pengembalians/verified', [PetugasPengembalian::class, 'verified'])->name('pengembalians.verified');
+    Route::get('/pengembalians/{peminjaman}/verify', [PetugasPengembalian::class, 'verify'])->name('pengembalians.verify');
+    Route::post('/pengembalians/{peminjaman}/verify', [PetugasPengembalian::class, 'storeVerify'])->name('pengembalians.storeVerify');
+    Route::post('/pengembalians/{pengembalian}/mark-paid', [PetugasPengembalian::class, 'markAsPaid'])->name('pengembalians.markAsPaid');
     Route::get('/pengembalians/{pengembalian}', [PetugasPengembalian::class, 'show'])->name('pengembalians.show');
-    Route::get('/pengembalians/{pengembalian}/edit', [PetugasPengembalian::class, 'edit'])->name('pengembalians.edit');
-    Route::put('/pengembalians/{pengembalian}', [PetugasPengembalian::class, 'update'])->name('pengembalians.update');
     
     // Laporan
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
@@ -80,6 +87,7 @@ Route::middleware(['auth', 'role:petugas,admin'])->prefix('petugas')->name('petu
     Route::post('/laporan/pengembalian', [LaporanController::class, 'pengembalian'])->name('laporan.pengembalian');
     Route::get('/laporan/stok-alat', [LaporanController::class, 'stokAlat'])->name('laporan.stok');
     Route::get('/laporan/cetak', [LaporanController::class, 'cetak'])->name('laporan.cetak');
+
 });
 
 // ============================================
@@ -99,13 +107,19 @@ Route::middleware(['auth', 'role:user,admin,petugas'])->prefix('peminjam')->name
     Route::post('/peminjamans', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'store'])->name('peminjamans.store');
     Route::get('/peminjamans', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'index'])->name('peminjamans.index');
     Route::get('/peminjamans/{peminjaman}', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'show'])->name('peminjamans.show');
+    Route::post('/peminjamans/{peminjaman}/submit-return', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'submitReturn'])->name('peminjamans.submitReturn');
+    
+    // YANG BENAR (pakai PeminjamanController):
+    Route::get('/peminjamans/{peminjaman}/return', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'createReturn'])->name('peminjamans.createReturn');
+    Route::post('/peminjamans/{peminjaman}/return', [App\Http\Controllers\Peminjam\PeminjamanController::class, 'storeReturn'])->name('peminjamans.storeReturn');
+    
+    // Pengembalian routes (pakai PengembalianController):
+    Route::get('/pengembalians/create', [App\Http\Controllers\Peminjam\PengembalianController::class, 'create'])->name('pengembalians.create');
+    Route::post('/pengembalians', [App\Http\Controllers\Peminjam\PengembalianController::class, 'store'])->name('pengembalians.store');
     
     // Lihat Denda
     Route::get('/denda', [App\Http\Controllers\Peminjam\DendaController::class, 'index'])->name('denda.index');
-    
-    // Kembalikan Alat (ajukan pengembalian)
-    Route::get('/pengembalians/create', [App\Http\Controllers\Peminjam\PengembalianController::class, 'create'])->name('pengembalians.create');
-    Route::post('/pengembalians', [App\Http\Controllers\Peminjam\PengembalianController::class, 'store'])->name('pengembalians.store');
-}); 
+});     
+
 
 require __DIR__.'/auth.php';

@@ -20,6 +20,7 @@
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Alat</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Kondisi</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Nominal Denda</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tanggal Verifikasi</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
             </thead>
@@ -40,6 +41,9 @@
                     </td>
                     <td class="px-6 py-4">
                         <p class="text-lg font-bold text-red-600">Rp {{ number_format($pengembalian->denda_final, 0, ',', '.') }}</p>
+                    </td>
+                    <td class="px-6 py-4 text-sm">
+                        {{ \Carbon\Carbon::parse($pengembalian->updated_at)->format('d M Y H:i') }}
                     </td>
                     <td class="px-6 py-4 space-x-2">
                         <a href="{{ route('admin.pengembalians.show', $pengembalian) }}" 

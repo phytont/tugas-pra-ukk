@@ -9,7 +9,7 @@
         <h3 class="text-lg font-semibold">Form Tambah Alat</h3>
     </div>
     
-    <form action="{{ route('admin.alats.store') }}" method="POST" class="p-6">
+    <form action="{{ route('admin.alats.store') }}" method="POST" enctype="multipart/form-data" class="p-6">
         @csrf
         
         <div class="mb-4">
@@ -75,6 +75,16 @@
             <label class="block text-gray-700 text-sm font-bold mb-2">Deskripsi</label>
             <textarea name="deskripsi" rows="3"
                       class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 @error('deskripsi') border-red-500 @enderror">{{ old('deskripsi') }}</textarea>
+        </div>
+
+        <div class="mb-6">
+            <label class="block text-gray-700 text-sm font-bold mb-2">Foto Alat</label>
+            <input type="file" name="foto" accept="image/*" 
+                   class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:border-blue-500 @error('foto') border-red-500 @enderror">
+            <p class="text-gray-500 text-xs mt-1">Format: JPEG, PNG, JPG, GIF (Maks 5MB)</p>
+            @error('foto')
+                <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+            @enderror
         </div>
         
         <div class="flex justify-end space-x-3">

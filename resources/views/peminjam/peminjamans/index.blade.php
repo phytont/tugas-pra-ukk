@@ -39,11 +39,19 @@
                             <span class="px-2 py-1 text-xs rounded bg-red-100 text-red-800">
                                 Ditolak
                             </span>
-                        @elseif($peminjaman->status == 'dipinjam')
-                            <span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
-                                Sedang Dipinjam
+                        @elseif($peminjaman->status == 'pending_approval')
+                            <span class="px-2 py-1 text-xs rounded bg-yellow-100 text-yellow-800">
+                                Menunggu Approval Petugas
                             </span>
-                        @elseif($peminjaman->status == 'dikembalikan')
+                        @elseif($peminjaman->status == 'menunggu_pengembalian')
+                            <span class="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">
+                                Aktif (Sedang Dipinjam)
+                            </span>
+                        @elseif($peminjaman->status == 'menunggu_verifikasi_pengembalian')
+                            <span class="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800">
+                                Menunggu Verifikasi Pengembalian
+                            </span>
+                        @elseif($peminjaman->status == 'selesai')
                             <span class="px-2 py-1 text-xs rounded bg-green-100 text-green-800">
                                 Selesai
                             </span>
@@ -53,10 +61,16 @@
                             </span>
                         @endif
                     </td>
-                    <td class="px-6 py-4">
-                        <a href="{{ route('peminjam.peminjamans.show', $peminjaman) }}" class="text-blue-600 hover:text-blue-900">
+                    <td class="px-6 py-4 space-x-2">
+                        <a href="{{ route('peminjam.peminjamans.show', $peminjaman) }}" class="text-blue-600 hover:text-blue-900 text-sm">
                             <i class="fas fa-eye"></i> Detail
                         </a>
+                    @if($peminjaman->status == 'menunggu_pengembalian')
+                        <a href="{{ route('peminjam.peminjamans.createReturn', $peminjaman) }}" 
+                        class="text-green-600 hover:text-green-900 text-sm">
+                            <i class="fas fa-undo"></i> Ajukan Pengembalian
+                        </a>
+                    @endif
                     </td>
                 </tr>
                 @empty

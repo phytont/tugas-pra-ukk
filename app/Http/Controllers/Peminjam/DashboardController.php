@@ -20,9 +20,13 @@ class DashboardController extends Controller
         $menungguPersetujuan = Peminjaman::where('user_id', $user->id)
             ->where('status_persetujuan', 'menunggu')
             ->count();
+        
+        // Hitung total denda dari denda_final dan belum dibayar
         $totalDenda = Pengembalian::whereHas('peminjaman', function($q) use ($user) {
             $q->where('user_id', $user->id);
-        })->sum('denda');
+        })
+        ->where('status_pembayaran', 'belum_bayar')
+        ->sum('denda_final');
         
         return view('peminjam.dashboard', compact(
             'totalPeminjaman',

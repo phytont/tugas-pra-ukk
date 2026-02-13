@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('alats', function (Blueprint $table) {
             $table->id();
             $table->string('nama_alat');
-            $table->foreignId('kategori_id')->constrained('kategoris')->onDelete('cascade');
+            $table->foreignId('kategori_id')->constrained('kategoris')->cascadeOnDelete();
             $table->string('merk')->nullable();
             $table->string('model')->nullable();
             $table->integer('jumlah_total')->default(0);

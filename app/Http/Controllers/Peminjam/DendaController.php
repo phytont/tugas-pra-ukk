@@ -4,29 +4,36 @@ namespace App\Http\Controllers\Peminjam;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pengembalian;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DendaController extends Controller
 {
-    // Lihat denda saya (sesuai flowchart)
     public function index()
     {
         $pengembalians = Pengembalian::whereHas('peminjaman', function($q) {
-            $q->where('user_id', auth()->id());
+            $q->where('user_id', Auth::id());
         })
-        ->with(['peminjaman.alat', 'peminjaman.user'])
-        ->where('denda', '>', 0)
+        ->where(function($q) {
+            $q->where('denda_telat_otomatis', '>', 0)
+              ->orWhere('denda_final', '>', 0);
+        })
+        ->with(['peminjaman.alat', 'validatedByPetugas'])
         ->latest()
-        ->paginate(10);
-        
-        $totalDenda = $pengembalians->sum('denda');
-        $sudahDibayar = 0; // Bisa dikembangkan dengan tabel pembayaran
-        $belumDibayar = $totalDenda - $sudahDibayar;
-        
-        return view('peminjam.denda.index', compact(
-            'pengembalians',
-            'totalDenda',
-            'sudahDibayar',
-            'belumDibayar'
-        ));
+        ->get();
+
+        $totalDenda = $pengembalians->sum(function($p) {
+            return ($p->denda_telat_otomatis ?? 0) + ($p->denda_final ?? 0);
+        });
+
+        $belumDibayar = $pengembalians->where('status_pembayaran', 'belum_bayar')->sum(function($p) {
+            return ($p->denda_telat_otomatis ?? 0) + ($p->denda_final ?? 0);
+        });
+
+        $sudahDibayar = $pengembalians->where('status_pembayaran', 'sudah_bayar')->sum(function($p) {
+            return ($p->denda_telat_otomatis ?? 0) + ($p->denda_final ?? 0);
+        });
+
+        return view('peminjam.denda.index', compact('pengembalians', 'totalDenda', 'belumDibayar', 'sudahDibayar'));
     }
 }
