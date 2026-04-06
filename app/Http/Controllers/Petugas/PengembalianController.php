@@ -59,7 +59,7 @@ class PengembalianController extends Controller
                 'kondisi' => 'baik',
                 'keterangan' => $validated['keterangan'],
                 'denda_final' => 0,
-                'status_pembayaran' => 'selesai',
+                'status_pembayaran' => 'sudah_bayar',
                 'validated_by_petugas' => Auth::id(),
             ]);
 
@@ -89,7 +89,7 @@ class PengembalianController extends Controller
                 'kondisi' => $validated['kondisi'],
                 'keterangan' => $validated['keterangan'],
                 'denda_final' => $validated['denda_final'],
-                'status_pembayaran' => $validated['denda_final'] > 0 ? 'belum_bayar' : 'selesai',
+                'status_pembayaran' => $validated['denda_final'] > 0 ? 'belum_bayar' : 'sudah_bayar',
                 'validated_by_petugas' => Auth::id(),
             ]);
 
@@ -210,7 +210,7 @@ class PengembalianController extends Controller
             'kondisi' => $validated['kondisi'],
             'keterangan' => $validated['keterangan'],
             'denda_final' => $validated['denda_final'],
-            'status_pembayaran' => $validated['denda_final'] > 0 ? 'belum_bayar' : 'selesai',
+            'status_pembayaran' => $validated['denda_final'] > 0 ? 'belum_bayar' : 'sudah_bayar',
             'validated_by_petugas' => Auth::id(),
         ]);
 
